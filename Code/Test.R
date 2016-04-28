@@ -1,14 +1,22 @@
-# proof an out of sample
-# trainwindow = 120, lag = 3, nbClust = 8, fClust = 10, slide = 1, drift = FALSE
+####################################################################
+###
+###            Test on out of sample dataset
+### 
+####################################################################
+# selected params : trainwindow = 120, lag = 3, nbClust = 8, 
+#                   fClust = 10, slide = 1, drift = FALSE
+
+#exec files that contain the main functions for data reading and processing
+source('Code/process_jodi.R')
+source('Code/functions.R')
 
 ## load data jodi
-Test_result <- loadJODI(rep = "Test_datasets/") 
+Test_result <- loadJODI(rep = "Data/Test_datasets/") 
 Test_dataoil <- Test_result$dataoil
 rm(Test_result)
 
 ## load oil prices
-Test_price <- LoadPrices("Test_datasets/")
-
+Test_price <- LoadPrices("Data/Test_datasets/")
 
 ## Set the params 
 Test_blag <- 3    #result[[j]]$nblag
@@ -74,12 +82,6 @@ Test_ARIMA111result <- DynamicModel(trainwindow = Test_trainwindow,
                                slide = 0,
                                h = Test_h, 
                                Test_CVdata, order = c(1,1,1), drift = FALSE)
-
-error_results <- rbind( "Dynamic AR2" = Test_AR2result$MmaeDync, 
-        "Dynamic ARIMA111" =  Test_ARIMA111result$MmaeDync,
-        "Auto Arima" = Test_AR2result$MmaeArima,
-        "Bench" = Test_ARIMA111result$Mbench)
-error_results
 
 ##Plot Multi-Step forecast
 matplot(cbind(colMeans(Test_AR2result$MmaeDync,na.rm=TRUE),
