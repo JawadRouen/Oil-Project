@@ -231,7 +231,7 @@ CVdata$trainoil_lasso_covs  <-
 NoClustresult <- DynamicModel(trainwindow = result[[j]]$trainwindow, 
                               slide = 1,
                               h = result[[j]]$h, 
-                              CVdata, method = "CSS")
+                              CVdata)
 
 
 colcountries <- clustboot(nbClust = result[[j]]$nbClust,
@@ -248,11 +248,11 @@ plot(cbind(CVdata$prices_lag,CVdata$trainoil_lasso_covs[,1:9]))
 Slideresult <- DynamicModel(trainwindow = result[[j]]$trainwindow, 
                             slide = 1,
                             h = result[[j]]$h, 
-                            CVdata, method = "CSS")
+                            CVdata)
 NoSlideresult <- DynamicModel(trainwindow = result[[j]]$trainwindow, 
                               slide = 0,
                               h = result[[j]]$h, 
-                              CVdata, method = "CSS")
+                              CVdata)
 AR2result <- DynamicModel(trainwindow = result[[j]]$trainwindow, 
                           slide = 0,
                           h = result[[j]]$h, 

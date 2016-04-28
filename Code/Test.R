@@ -34,7 +34,7 @@ Test_colcountries <- colcountries <- c("KAZAKHSTAN", "PHILIPP", "AZERBAIJAN", "N
 ### Test dataset will start at March 2015
 ####################################################################
 ####################################################################
-Train_end <-  2015+ 2/12
+Train_end <-  2015+ 1/12
 
 #Test_Cols <- colnames(CVdata$trainoil_lasso_covs)
 Test_Cols <- c("AZERBAIJAN_Production_Thousand Metric Tons (kmt)_Lag1",  
@@ -83,20 +83,27 @@ Test_ARIMA111result <- DynamicModel(trainwindow = Test_trainwindow,
                                h = Test_h, 
                                Test_CVdata, order = c(1,1,1), drift = FALSE)
 
+Test_Dynamicresult <- DynamicModel(trainwindow = Test_trainwindow, 
+                                    slide = 0,
+                                    h = Test_h, 
+                                    Test_CVdata)
+
 ##Plot Multi-Step forecast
 matplot(cbind(colMeans(Test_AR2result$MmaeDync,na.rm=TRUE),
               colMeans(Test_ARIMA111result$MmaeDync,na.rm=TRUE), 
-              colMeans(Test_AR2result$MmaeArima,na.rm=TRUE),
+              colMeans(Test_Dynamicresult$MmaeDync,na.rm=TRUE),
+              colMeans(Test_ARIMA111result$MmaeArima,na.rm=TRUE),
               colMeans(Test_ARIMA111result$Mbench,na.rm=TRUE)
 ), type = 'b', xlab="horizon", ylab="MAE", main="Multi-step")
-legend("bottomright",legend=c("Dynamic AR2",  "Dynamic ARIMA(1,1,1)" , 
+legend("topleft",legend=c("Dynamic AR2",  "Dynamic ARIMA(1,1,1)" , "Auto Dynamic",
                               "Auto Arima", "Bench"),
        col=1:6,lty=1)
 
 ##Plot one step forecast
-boxplot(cbind("AR 2"=Test_AR2result$MmaeDync[,1], 
-              "Bench"=Test_ARIMA111result$Mbench[,1],
-              "ARIMA(1,1,1)" = Test_ARIMA111result$MmaeDync[,1]),
+boxplot(cbind("AR 2"=Test_AR2result$MmaeDync[,1],
+              "ARIMA(1,1,1)" = Test_ARIMA111result$MmaeDync[,1], 
+              "Auto Dynamic" = Test_Dynamicresult$MmaeDync[,1], 
+              "Bench"=Test_ARIMA111result$Mbench[,1]),
         ylab="MAE", main = "One-step MAE")
 abline(h =median(Test_ARIMA111result$Mbench[,1]), lty = 2)
 
